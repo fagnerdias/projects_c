@@ -34,6 +34,8 @@ void editar_compromisso(Compromisso* _compromisso);
 
 void remover_compromisso(Compromisso* eventos, int tamanho, int codigo);
 
+void imprimir_calendar(Compromisso* eventos, int tamanho);
+
 
 Compromisso* carrega_agenda(int* tamanho){
     Calendar calendar;
@@ -51,19 +53,15 @@ Compromisso* carrega_agenda(int* tamanho){
         for(int i=0; i < *tamanho; i++){            
             Compromisso tmp;             
             int cod = 0;
-            char* desc;             
+            char* desc = calloc(20, sizeof(char));
             fscanf(arquivo, "%d", &cod);
-            tmp.codigo = cod;            
-            //printf("teste\n");
+            tmp.codigo = cod;                        
             fscanf(arquivo, " %[^\n]", desc);
-            printf("%s\n", desc);
-            printf("teste\n");
-            tmp.descricao = calloc(strlen(desc) +1, sizeof(char));
-            printf("teste\n");
-            strcpy(tmp.descricao, desc);
-            printf("teste\n");
-            char* hora;
-            char* minutos;
+            //printf("%s\n", desc);            
+            tmp.descricao = calloc(strlen(desc) +1, sizeof(char));            
+            strcpy(tmp.descricao, desc);            
+            char* hora = calloc(2, sizeof(char));
+            char* minutos = calloc(2, sizeof(char));
             fscanf(arquivo, " %[^:]",  hora);
             tmp.inicio.hora = atoi(hora);
             fscanf(arquivo, " %[^ ]",  minutos);
@@ -72,25 +70,35 @@ Compromisso* carrega_agenda(int* tamanho){
             tmp.final.hora = atoi(hora);
             fscanf(arquivo, " %[^ ]",  minutos);
             tmp.final.minutos = atoi(minutos);
+            printf("Compromisso tmp ------------------\n");
+            imprimir_calendar(&tmp, 1);
+            printf("Compromisso tmp ------------------\n");
             calendar.eventos[i] = tmp;            
         }
 
     }
     
-
     return calendar.eventos;
 }
+
+void imprimir_calendar(Compromisso* eventos, int tamanho){
+    printf("Lista de eventos:\n");
+    for(int i =0; i< tamanho; i++){
+        printf("Evento %d \n Descrição: %s\n Horario Inicio: %d:%d \n Horario Fim: %d:%d\n\n", 
+        eventos->codigo, eventos->descricao, eventos->inicio.hora, eventos->inicio.minutos, eventos->final.hora, eventos->final.minutos);
+        eventos++;
+    }
+}
+
 
 int main(){
 
     Calendar calendar;
     int tamanho=0;
 
-    carrega_agenda(&tamanho);
-
-
-    printf("Test\n");
-
+    calendar.eventos = carrega_agenda(&tamanho);
+    imprimir_calendar(calendar.eventos, tamanho);
+    
     return 0;
 }
 
