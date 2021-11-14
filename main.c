@@ -60,19 +60,21 @@ Compromisso* carrega_agenda(int* tamanho){
             //printf("%s\n", desc);            
             tmp.descricao = calloc(strlen(desc) +1, sizeof(char));            
             strcpy(tmp.descricao, desc);            
-            char* hora = calloc(2, sizeof(char));
-            char* minutos = calloc(2, sizeof(char));
+            char* hora = calloc(4, sizeof(char));
+            char* minutos = calloc(4, sizeof(char));
             fscanf(arquivo, " %[^:]",  hora);
             tmp.inicio.hora = atoi(hora);
-            fscanf(arquivo, " %[^ ]",  minutos);
+            hora = calloc(4, sizeof(char));
+            fscanf(arquivo, " %[^ \n]",  minutos);
             tmp.inicio.minutos = atoi(minutos);
+            minutos = calloc(4, sizeof(char));
             fscanf(arquivo, " %[^:]",  hora);
             tmp.final.hora = atoi(hora);
-            fscanf(arquivo, " %[^ ]",  minutos);
+            fscanf(arquivo, " %[^ \n]",  minutos);
             tmp.final.minutos = atoi(minutos);
-            printf("Compromisso tmp ------------------\n");
-            imprimir_calendar(&tmp, 1);
-            printf("Compromisso tmp ------------------\n");
+            //printf("Compromisso tmp ------------------\n");
+            //imprimir_calendar(&tmp, 1);
+            //printf("Compromisso tmp ------------------\n");
             calendar.eventos[i] = tmp;            
         }
 
@@ -90,6 +92,40 @@ void imprimir_calendar(Compromisso* eventos, int tamanho){
     }
 }
 
+void salvar_agenda(Compromisso* eventos, int tamanho){
+    FILE* arq;
+    if((arq = fopen("calendar.txt", "w")) != NULL){
+        fprintf(arq, "Calendário:\n\n");
+        for (int i = 0; i < tamanho; i++)
+        {
+            fprintf(arq,"Evento %d \n Descrição: %s\n Horario Inicio: %d:%d \n Horario Fim: %d:%d\n\n", 
+            eventos->codigo, eventos->descricao, eventos->inicio.hora, eventos->inicio.minutos, eventos->final.hora, eventos->final.minutos);
+            eventos++;
+        }        
+    }
+}
+
+
+void cadastra_compromisso(Compromisso* eventos, int tamanho){
+    Compromisso tmp;
+    char* descricao = calloc(20, sizeof(char));
+    scanf("Digite a descrição do envento: %s", descricao);
+    strcpy(tmp.descricao, desc);
+    int horaInicio =0;
+    scanf("Digite a hora inicial: %d", horaInicio);
+    tmp.inicio.hora = horaInicio;
+    int minuitosInicio =0;
+    scanf("Digite a minutos inicial: %d", minutosInicio);
+    tmp.inicio.minutos = minuitosInicio;
+    int horaFim =0;
+    scanf("Digite a hora final: %d", horaFim);    
+    tmp.final.hora = horaFim
+    int minutosFim =0;
+    scanf("Digite a minutos final: %d", minutosFim);
+    tmp.final.minutos = minutosFim;
+
+    eventos[tamanho+1] = tmp;
+}
 
 int main(){
 
@@ -98,6 +134,7 @@ int main(){
 
     calendar.eventos = carrega_agenda(&tamanho);
     imprimir_calendar(calendar.eventos, tamanho);
+    salvar_agenda(calendar.eventos, tamanho);
     
     return 0;
 }
